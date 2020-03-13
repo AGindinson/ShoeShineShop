@@ -4,6 +4,7 @@
 #include <memory>
 #include <random>
 #include <thread>
+#include <functional>
 
 Model::Model() : TheShop(std::make_unique<Shop>(
     Params.FirstChairRate, Params.SecondChairRate)) {}
@@ -24,7 +25,7 @@ void Model::Execute(const DurationT &ExecutionDuration) {
     DurationT CustomerArrivalInterval(CustomerArrivalDist(RandomEngine));
     std::this_thread::sleep_for(CustomerArrivalInterval);
     ++Records.TotalCustomerCount;
-    if (TheShop->Submit() == Submittable::State::ACCEPT)
+    if (TheShop->Submit() != Submittable::State::ACCEPT)
       ++Records.DeclinedCustomerCount;
   } while (std::chrono::steady_clock::now() < ExecutionEndTime);
 }
@@ -32,6 +33,7 @@ void Model::Execute(const DurationT &ExecutionDuration) {
 void Model::PrintRecords() {
   std::cout << "Model records:\n";
   double DeclineRatio =
-      Records.DeclinedCustomerCount / Records.TotalCustomerCount;
+      (double) Records.DeclinedCustomerCount /
+      (double) Records.TotalCustomerCount;
   std::cout << "Decline ratio: " << DeclineRatio << "\n";
 }
