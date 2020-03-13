@@ -12,7 +12,8 @@ int main() {
   std::cin >> InputParams.SecondChairRate;
 
   Model TheModel(std::move(InputParams));
-  const Model::DurationT Duration(30);
+  // TODO: Accept the time as an argument
+  const Model::DurationT Duration(60);
   TheModel.Execute(Duration);
   TheModel.PrintRecords();
   return 0;
